@@ -1,0 +1,194 @@
+<div id="page-wrapper" class="gray-bg dashbard-1">
+            <div class="row border-bottom">
+                <nav class="navbar navbar-static-top" role="navigation" style="margin-bottom: 0">
+            <div class="navbar-header"><a class="navbar-minimalize minimalize-styl-2 btn btn-primary " href="#"><i class="fa fa-bars"></i> </a>
+                <form role="search" class="navbar-form-custom" method="post" action="search_results.html">
+                    <div class="form-group">
+                        <input type="text" placeholder="请输入您需要查找的内容 …" class="form-control" name="top-search" id="top-search">
+                    </div>
+                </form>
+            </div>
+            <ul class="nav navbar-top-links navbar-right">
+            	<li class="dropdown" onclick="getAlarmCount();" title="查看当前消息" id="show_alarm_info">
+                            <a class="dropdown-toggle count-info" data-toggle="dropdown" href="#" aria-expanded="false">
+                                <i class="fa fa-bell"></i> <span class="label label-danger" id="total_count"></span>
+                            </a>
+                            <ul class="dropdown-menu dropdown-alerts" >
+                                <li style="display: none;">
+                                    <a href="${ctxPath}/airSensorAlarmInfo">
+                                        <div>
+                                            <i class="fa fa-envelope fa-fw"></i> <span>设备离线</span>
+                                            <span class="pull-right badge badge-primary" ></span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li style="display: none;" class="divider"></li>
+                                <li style="display: none;">
+                                    <a href="${ctxPath}/airSensorAlarmInfo">
+                                        <div>
+                                            <i class="fa fa-qq fa-fw"></i> <span>数值异常</span>
+                                            <span class="pull-right badge badge-primary" ></span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li  style="display: none;" class="divider"></li>
+                                <li style="display: none;">
+                                    <a href="${ctxPath}/airSensorAlarmInfo">
+                                        <div>
+                                            <i class="fa fa-ioxhost fa-fw"></i> <span>设备故障</span>
+                                            <span class="pull-right badge badge-primary" ></span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li  style="display: none;"  class="divider"></li>
+                                <li style="display: none;">
+                                    <a href="${ctxPath}/airSensorAlarmInfo">
+                                        <div>
+                                            <i class="fa fa-bolt fa-fw"></i> <span>电缆断开</span>
+                                            <span class="pull-right badge badge-primary" ></span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li  style="display: none;" class="divider"></li>
+                                <li style="display: none;">
+                                    <a href="${ctxPath}/airSensorAlarmInfo">
+                                        <div>
+                                            <i class="fa fa-info-circle fa-fw"></i> <span>接地故障</span>
+                                           <span class="pull-right badge badge-primary" ></span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li  style="display: none;" class="divider"></li>
+                                <li style="display: none;">
+                                    <a href="${ctxPath}/airSensorAlarmInfo">
+                                        <div>
+                                            <i class="fa fa-road fa-fw"></i> <span>未知错误</span>
+                                            <span class="pull-right badge badge-primary" ></span>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li  style="display: none;" class="divider"></li>
+                                
+                                
+                                <li style="display: none;" id="show_all">
+                                    <div class="text-center link-block">
+                                        <a class="J_menuItem" href="${ctxPath}/airSensorAlarmInfo" data-index="89">
+                                            <strong>查看所有 </strong>
+                                            <i class="fa fa-angle-right"></i>
+                                        </a>
+                                    </div>
+                                </li>
+                            </ul>
+                        </li>
+            
+                <li class="dropdown hidden-xs">
+                    <a class="right-sidebar-toggle" aria-expanded="false">
+                        <i class="fa fa-tasks"></i> 主题
+                    </a>
+                </li>
+            </ul>
+            <script type="text/javascript">
+            
+	          	//查询消息条数	
+				function getInformCount(){
+										
+					$.ajax({ //使用JQuery内置的Ajax方法
+	      				type: "post",
+	      				//post请求方式
+	      				async: true,
+	      				//异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+	      				url: "${ctxPath}/airSensorAlarmInfo/getCount",
+	      				data: {},
+	      				dataType: "json",
+	      				//返回数据形式为json
+	      				cache: false,
+	      				success: function(result) {
+	      					//console.log(result);
+	      					
+	      					//消息总条数
+	      					var totalCount=result.total;
+	      					
+	      					if(totalCount>0){
+	      						$('#total_count').html(totalCount);
+	      						$('#show_all').show();
+	      						//类型通知
+	      						var typeCount=result.typeCount;
+	      						for(var i in typeCount){
+	      							var type=i;
+	      							var count=typeCount[i];
+	      							if(count>0){
+	      								var $span=$("span:contains("+type+")");
+	      								$span.next('span').html('+'+count);
+										var $li=$span.parent().parent().parent();
+										$li.show();$li.next('li').show();
+	      							}
+	      							
+	      						}
+	      						
+	      					}else{
+	      						$('#total_count').hide();
+	      						
+	      					}
+	      				}
+					});
+				}
+	          	
+	          	function getAlarmCount(){
+	          		getInformCount();
+	          		if(!$('#total_count').html()){
+	          			$('#show_alarm_info').children().find('ul').hide();
+	          			layer.tips('当前没有新消息！', $('#show_alarm_info'),{
+  							tips:1
+  						});
+	          			
+	          		}
+	          	}
+            </script>
+            <script type="text/javascript">
+            	$(function(){
+            		getInformCount();
+            		//每隔1分钟获取一次消息总数
+            		setInterval(getInformCount,60000);
+            	});
+            
+            </script>
+        </nav>
+    </div>
+    <div class="row content-tabs">
+        <button class="roll-nav roll-left J_tabLeft"><i class="fa fa-backward"></i>
+        </button>
+        <nav class="page-tabs J_menuTabs">
+            <div class="page-tabs-content">
+                <!-- <a href="javascript:;" class="active J_menuTab" data-id="${ctxPath}/blackboard">首页</a> -->
+                <a href="javascript:;" class="active J_menuTab" data-id="${ctxPath}/air/monitor">首页</a>
+            </div>
+        </nav>
+        <button class="roll-nav roll-right J_tabRight"><i class="fa fa-forward"></i>
+        </button>
+        <div class="btn-group roll-nav roll-right">
+            <button class="dropdown J_tabClose" data-toggle="dropdown">关闭操作<span class="caret"></span>
+
+            </button>
+            <ul role="menu" class="dropdown-menu dropdown-menu-right">
+                <li class="J_tabShowActive"><a>定位当前选项卡</a>
+                </li>
+                <li class="divider"></li>
+                <li class="J_tabCloseAll"><a>关闭全部选项卡</a>
+                </li>
+                <li class="J_tabCloseOther"><a>关闭其他选项卡</a>
+                </li>
+            </ul>
+        </div>
+        <a href="logout" class="roll-nav roll-right J_tabExit"><i class="fa fa fa-sign-out"></i> 退出</a>
+    </div>
+    <div class="row J_mainContent" id="content-main">
+<!--         <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="${ctxPath}/blackboard" frameborder="0" data-id="${ctxPath}/blackboard" seamless></iframe>
+ -->        
+       <iframe class="J_iframe" name="iframe0" width="100%" height="100%" src="${ctxPath}/air/monitor" frameborder="0" data-id="${ctxPath}/air/monitor" seamless></iframe>
+        
+    </div>
+    <div class="footer">
+        <div class="" style="text-align: center;">&copy; 1995-2016 <a href="http://www.hnsdsdz.com" target="_blank">河南省东森电子工程有限公司</a>
+        </div>
+    </div>
+</div>

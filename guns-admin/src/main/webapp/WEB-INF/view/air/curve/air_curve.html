@@ -1,0 +1,218 @@
+@layout('/common/_container.html'){
+
+ <div class="row">
+    <div class="col-sm-12">
+        <div class="ibox float-e-margins">
+            <div class="ibox-title">
+                <h5>曲线分析</h5>
+            </div>
+            <div class="ibox-content">
+                <div class="row row-lg">
+                    <div class="col-sm-12">
+                       	<div class="row">
+							<div class="col-lg-2 col-sm-3" style="width: 21.966667%;margin-left: inherit;">
+							<input class="form-control" style="margin-bottom: 10px;" id="search_input" name="code" placeholder="输入名称查询" type="text">
+								<div class="panel panel-default" >
+									<div class="panel-heading">区域列表</div>
+									<div class="panel-body dept-tree">
+										<ul id="areaTree" class="ztree"></ul>
+									</div>
+								</div>
+							</div> 
+							
+							<div class="col-lg-10 col-sm-9" style="margin-right: inherit;width: 79%;">
+								<div class="row">
+									<div class="col-lg-10 col-sm-9">
+										<div class="row form-horizontal"  id="searchForm">
+											
+											<div class="col-lg-4 col-sm-6">
+												<#TimeCon id="beginTime" name="开始时间" isTime="true" pattern="YYYY-MM-DD hh:mm:ss"/>
+											</div>
+											<div class="col-lg-4 col-sm-6">
+												<#TimeCon id="endTime" name="结束时间" isTime="true" pattern="YYYY-MM-DD hh:mm:ss"/>
+											</div>
+											
+											
+										</div>
+									</div>
+									<div class="col-lg-2 col-sm-3">
+										<div class="row">
+											<div class="col-lg-12 col-sm-12">
+												<#button name="搜索" icon="fa-search" clickFun="AirCurve.search()"/>
+												<#button name="重置" icon="fa-trash" clickFun="AirCurve.resetSearch()" space="true"/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row" id="curve_graph" >
+								
+									<!-- 为 ECharts 准备一个具备大小（宽高）的 DOM -->
+    								<div id="main" style="width: 100%;height: 700px;" ></div>
+								</div>
+							</div>
+							
+							
+							
+							
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="${ctxPath}/static/modular/air/curve/air_curve2.js"></script>
+<script type="text/javascript">
+var nums=[];        //数值数组（存放服务器返回的所有温度值）
+var grades=[];		//空气等级数组
+var aqis=[];		//aqi数组
+var xAxis=[];		//气象站数组
+
+var colors=[];
+
+$.ajax({    //使用JQuery内置的Ajax方法
+type : "post",        //post请求方式
+async : true,        //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
+url : "/airStationData/showFiveDaysAQI",    //请求发送到ShowInfoIndexServlet处
+dataType : "json",        //返回数据形式为json
+success : function(result) {
+    //请求成功时执行该函数内容，result即为服务器返回的json对象
+    if (result  && result.data.length > 0) {
+   	 //console.log(result);
+    	var data=result.data;
+    	
+    	for(var i=0;i<data.length;i++){
+    		var stationData=data[i];
+    		xAxis.push(stationData.tName);
+    		nums.push(stationData.sensorNum);
+    		grades.push(stationData.airGrade);
+    		aqis.push(stationData.aQI);
+    		colors.push(AirCurve.color());
+    	}
+    	
+    	
+    	
+           myChart.hideLoading();    //隐藏加载动画
+           
+           myChart.setOption({        //载入数据
+        	   title: {    //图表标题
+        	        text: '五天数据统计表'
+        	    },
+        	    tooltip: {
+        	    	trigger: 'axis',
+        	        axisPointer : {            // 坐标轴指示器，坐标轴触发有效
+        	            type : 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+        	        }
+        	    },
+        	    dataZoom: [
+        	         {
+        	             type: 'slider',    //支持鼠标滚轮缩放
+        	             start: 0,            //默认数据初始缩放范围为10%到90%
+        	             end: 100
+        	         },
+        	         {
+        	             type: 'inside',    //支持单独的滑动条缩放
+        	             start: 0,            //默认数据初始缩放范围为10%到90%
+        	             end: 100
+        	         }
+        	    ],
+        	    toolbox: {    //工具栏显示             
+        	        show: true,
+        	        feature: {                
+        	           // saveAsImage: {show:true} //显示“另存为图片”工具
+        	        mark : {show: true},  
+        	        dataView : {show: true, readOnly: false},  
+        	        magicType : {show: true, type: ['line', 'bar']},  
+        	        restore : {show: true},  
+        	        saveAsImage : {show: true} 
+        	        }
+        	    },
+        	   
+        	   legend: {    //图表上方的类别显示               
+        	        show:true,
+        	        data:['设备数量','AQI','空气质量等级']
+        	    },
+        	   color : colors,
+               xAxis: {
+                   data: xAxis    //填入X轴数据
+               },
+               
+               yAxis : [    //Y轴（这里我设置了两个Y轴，左右各一个）
+                            {
+                                //第一个（左边）Y轴，yAxisIndex为0
+                                 type : 'value',
+                                 name : 'AQI',
+                                 /* max: 120,
+                                 min: -40, */
+                                 scale : true,
+                                 axisLabel : {
+                                     formatter: '{value} '    //控制输出格式
+                                 }
+                             }
+                         
+                ],
+                series : [    //系列（内容）列表                      
+                            {
+                                name:'设备数量',
+                                type:'bar',    //折线图表示（生成温度曲线）
+                                symbol:AirCurve.symbol(),    //设置折线图中表示每个坐标点的符号；emptycircle：空心圆；emptyrect：空心矩形；circle：实心圆；emptydiamond：菱形                        
+                                data:nums,        //数据值通过Ajax动态获取
+                                stack:'bar'
+                            },
+                            
+                            {
+                                name:'AQI',
+                                type:'line',
+                                symbol:AirCurve.symbol(), 
+                                data:aqis,
+                                markPoint: {
+                                    data: [
+                                        {type: 'max', name: '最大值'},
+                                        {type: 'min', name: '最小值'}
+                                    ]
+                                },
+                                markLine: {
+                                    data: [
+                                        {type: 'average', name: '平均值'}
+                                    ]
+                                }
+                            },
+                            
+                            {
+                                name:'空气质量等级',
+                                type:'bar',
+                                symbol:AirCurve.symbol(),    //标识符号为实心圆
+                                data:grades,
+                                stack:'bar',
+                                barWidth:75
+                            }                
+                ]
+           },true);
+           
+    }
+    else {
+        //返回的数据为空时显示提示信息
+        	layer.msg("图表请求数据为空，可能服务器暂未录入观测数据，您可以稍后再试！");
+          myChart.hideLoading();
+          myChart.clear();
+    }
+
+},
+error : function(errorMsg) {
+    //请求失败时执行该函数
+    layer.msg("图表请求数据失败，可能是服务器开小差了");
+    myChart.hideLoading();  
+    myChart.clear();
+}
+});
+
+
+// 使用刚指定的配置项和数据显示图表。
+myChart.setOption(option); 
+
+     	
+</script>
+
+@}
+
+
