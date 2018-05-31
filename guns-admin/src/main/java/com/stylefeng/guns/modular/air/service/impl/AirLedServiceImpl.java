@@ -25,7 +25,6 @@ import com.stylefeng.guns.modular.air.dao.AirLedMapper;
 import com.stylefeng.guns.modular.air.dao.AirSensorMapper;
 import com.stylefeng.guns.modular.air.dao.AirStationDataMapper;
 import com.stylefeng.guns.modular.air.dao.AirStationMapper;
-import com.stylefeng.guns.modular.air.dao.AirTaskMapper;
 import com.stylefeng.guns.modular.air.dao.SensorTypeMapper;
 import com.stylefeng.guns.modular.air.model.AirLed;
 import com.stylefeng.guns.modular.air.model.AirSensor;
@@ -33,7 +32,6 @@ import com.stylefeng.guns.modular.air.model.AirStation;
 import com.stylefeng.guns.modular.air.model.AirStationData;
 import com.stylefeng.guns.modular.air.model.SensorType;
 import com.stylefeng.guns.modular.air.service.IAirLedService;
-import com.stylefeng.guns.modular.air.task.JobTask;
 
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -71,10 +69,6 @@ public class AirLedServiceImpl extends ServiceImpl<AirLedMapper, AirLed> impleme
 	
 	private static Logger logger = LoggerFactory.getLogger(AirLedServiceImpl.class);
 	
-	@Autowired
-	private JobTask jobTask;
-	@Autowired
-	private AirTaskMapper airTaskMapper;
 	@Autowired
 	private AirStationMapper airStationMapper;
 	@Autowired

@@ -1,0 +1,152 @@
+body{
+	padding: 102px 0 40px 0;
+}
+
+.footer{
+	font-size: 12px;
+	color: #fff;
+	line-height: 40px;
+	background-color: #143e14;
+	text-align: center;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 10000;
+}
+.map{
+	width: 1280px;
+	margin: 0 auto 88px auto;
+}
+.map .nav p{
+	line-height: 50px;
+	font-size: 14px;
+}
+.map .nav p a{
+	color: #000;
+}
+.map .title{
+	overflow: hidden;
+	background-color: #f2f2f2;
+	height: 30px;
+	border: 1px solid #ddd;
+	border-bottom: none;
+}
+.map .title h3{
+	float: left;
+	width: 112px;
+	font-size: 16px;
+	line-height: 30px;
+	text-align: center;
+	background-color: #f5f5f5;
+	cursor: pointer;
+	border-right: 1px solid #ccc;
+}
+.map .title h3.current{
+	background-color: #6ab683;
+	color: #fff;
+}
+.map .info{
+	/*padding: 4px;*/
+	background: url(../images/bg19.png) no-repeat;
+	display: none;
+	position: relative;
+}
+.map .active{
+	display: block;
+}
+.map .info .ditu{
+	width: 100%;
+}
+.map .info .camera .camera_info{
+	width: 224px;
+	background-color: #f2f2f2;
+	border: 1px solid #ccc;
+	padding-bottom: 10px;
+	position: relative;
+}
+.map .info .camera .camera_info h3{
+	font-size: 14px;
+	line-height: 30px;
+	color: #fff;
+	background: url(../images/bg15.png) no-repeat;
+	padding-left: 10px;
+	margin-bottom: 10px;
+}
+.map .info .camera .camera_info p{
+	font-size: 12px;
+	line-height: 28px;
+	padding: 0 12px;
+}
+.map .info .camera .camera_info p span{
+	color: #7e7e7e;
+}
+.map .info .camera .camera_info i{
+	display: block;
+	width: 13px;
+	height: 13px;
+	background: url(../images/close1.png) no-repeat;
+	position: absolute;
+	top: 8px;
+	right: 10px;
+}
+.map .info .camera .camera_info{
+	position: absolute;
+	top: 50px;
+	right: -200px;
+	display: none;
+	z-index: 99999999999999999999999;
+}
+.map .info .camera1{
+	position: absolute;
+	bottom: 240px;
+	left: 180px;
+}
+.map .info .camera2{
+	position: absolute;
+	top: 280px;
+	left: 540px;
+}
+.map .info .camera3{
+	position: absolute;
+	top: 292px;
+	right: 530px;
+}
+.map .info .camera4{
+	position: absolute;
+	bottom: 48px;
+	left: 280px;
+}
+.map .info .camera5{
+	position: absolute;
+	bottom: 30px;
+	left: 5px;
+}
+.map .info .camera6{
+	position: absolute;
+	bottom: 30px;
+	left: 54px;
+}
+.map .info .camera7{
+	position: absolute;
+	bottom: 30px;
+	right: 5px;
+}
+.map .info .camera8{
+	position: absolute;
+	bottom: 36px;
+	right: 500px;
+}
+.map .info .camera9{
+	position: absolute;
+	bottom: 150px;
+	right: 316px;
+}
+.cc{
+	width: 140px;
+	height: 93px;
+	background: url(../images/yuan.png) no-repeat;
+	position: absolute;
+	bottom: 104px;
+	left: 446px;
+}

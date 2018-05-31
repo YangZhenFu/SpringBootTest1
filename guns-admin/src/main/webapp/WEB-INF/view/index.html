@@ -6,31 +6,67 @@
     <meta name="renderer" content="webkit">
     <title>智慧气象监测云平台系统</title>
     <link rel="shortcut icon" href="${ctxPath}/static/favicon.ico">
-    <link href="${ctxPath}/static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet">
+    <!-- <link href="${ctxPath}/static/css/bootstrap.min.css?v=3.3.6" rel="stylesheet"> -->
     <link href="${ctxPath}/static/css/font-awesome.min.css?v=4.4.0" rel="stylesheet">
     <link href="${ctxPath}/static/css/animate.css" rel="stylesheet">
     <link href="${ctxPath}/static/css/style.css?v=4.1.0" rel="stylesheet">
     
      <script src="${ctxPath}/static/js/jquery.min.js?v=2.1.4"></script>
+     
+     <link rel="stylesheet" href="${ctxPath}/static/me/css/base.css">
+	<link rel="stylesheet" href="${ctxPath}/static/me/css/index.css">
+     
 </head>
 
-<body class="fixed-sidebar full-height-layout gray-bg" style="overflow:hidden">
-    <div id="wrapper">
-    
-        <!--左侧导航开始-->
-        	@include("/common/_tab.html"){}
-        <!--左侧导航结束-->
-        
-        <!--右侧部分开始-->
-        	@include("/common/_right.html"){}
-        <!--右侧部分结束-->
-        
-        <!--右侧边栏开始-->
-        	@include("/common/_theme.html"){}
-        <!--右侧边栏结束-->
-       
-    </div>
+<body>
 
+@var sysuser = shiro.getUser();
+    
+        <div class="index_header">
+		<div class="logo">
+			<!-- <img src="${ctxPath}/static/me/images/logo.png" alt=""> -->
+			<img src="${ctxPath}/static/img/login-logo.png" alt="">
+			<p>气象监控平台</p>
+		</div>
+		<div class="admin">
+			<a class="pic" href="javascript:void(0);">
+				<img alt="image" class="img-circle"
+                               @if(isEmpty(avatar)){
+                                    src="${ctxPath}/static/img/girl.gif"
+                               @}else{
+                                    src="${ctxPath}/kaptcha/${avatar}"
+                               @}
+                               />
+			<!-- <img src="${ctxPath}/static/me/images/hade.png" alt=""> --></a>
+			 <a href="javascript:void(0);" class="adm">${sysuser.name}
+				<div class="aa">
+					<p url="${ctxPath}/mgr/user_info" onclick="layerSysUserPage(this);">个人资料</p>
+					<p  url="${ctxPath}/mgr/user_chpwd" onclick="layerSysUserPage(this);">修改密码</p>
+					<p url="${ctxPath}/mgr/sysAbout" onclick="layerSysUserPage(this);">关于</p>
+				</div>
+			</a> 
+			
+			<a href="logout" class="Back"><img src="${ctxPath}/static/me/images/back.png" alt="" title="退出"></a> 
+		</div>
+	</div>
+	<div class="content">
+		
+		@if(isNotEmpty(titles)){
+			@for(title in titles){
+				<a style="background: url(${ctxPath}/static/me/images/bg${titleLP.index}.png) no-repeat;" href="${ctxPath}/mgr/openPage/${title.id}">
+				@var img = airStation.findSysMenuImg(title.name);
+				<img src="${ctxPath}/static/me/images/${img}.png" alt="">
+				<p>${title.name}</p>
+				<span></span>
+			</a>
+			@}
+		@}
+	</div>
+	<div class="footer">
+	        <div class="" style="text-align: center;">COPYRIGHT &copy; 1995-2016 <a href="http://www.hnsdsdz.com" target="_blank" style="color: white;">河南省东森电子工程有限公司</a>
+	        </div>
+	</div>
+       
     <!-- 全局js -->
     <script src="${ctxPath}/static/js/bootstrap.min.js?v=3.3.6"></script>
     <script src="${ctxPath}/static/js/plugins/metisMenu/jquery.metisMenu.js"></script>
@@ -48,10 +84,49 @@
 		<link href="${ctxPath}/static/css/plugins/toastr/toastr.min.css" rel="stylesheet">
 		<script type="text/javascript" src="${ctxPath}/static/js/plugins/toastr/toastr.min.js"></script>
 		<!-- Toast END -->
+	
+	<!-- Gritter BEGIN -->
+		<link href="${ctxPath}/static/js/plugins/gritter/jquery.gritter.css" rel="stylesheet">
+		<script type="text/javascript" src="${ctxPath}/static/js/plugins/gritter/jquery.gritter.min.js"></script>
+		<!-- Gritter END -->
 
 	<script type="text/javascript">
+	$('.adm').click(function function_name(argument) {
+		if($('.adm .aa').css('display') == 'none'){
+			$('.adm .aa').css('display','block');
+		}else{
+			$('.adm .aa').css('display','none');
+		}
+	})
+	
+	function layerSysUserPage(obj){
+		var url=$(obj).attr('url');
+		location.href=url;
+	}
+	
+	
+	$(document).ready(function(){
+		$.post('/airSensorAlarmInfo/queryAlarm',function(result){
+			var alarms=result;
+			if(alarms && alarms.length>0){
+				
+				for(var i=0;i<alarms.length;i++){
+					var alarm=alarms[i];
+					
+					 $.gritter.add({
+		                title: '<a href="/airSensorAlarmInfo" class="text-warning">告警信息</a>',
+		                text: alarm.alarmInfo,
+		                time: 10000
+		            }); 
+					
+				}
+			}
+		});
 		
+	});
 	</script>
 </body>
 
 </html>
+
+

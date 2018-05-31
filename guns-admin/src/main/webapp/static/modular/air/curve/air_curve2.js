@@ -88,7 +88,7 @@ var dims = {
  */
 AirCurve.formParams = function() {
     var queryData = {};
-    queryData['areaId'] = AirCurve.areaId;
+    queryData['areaId'] = $('#sensorType option:selected').val();
     queryData['beginTime'] = $("#beginTime").val();
     queryData['endTime'] = $("#endTime").val();
     return queryData;
@@ -107,11 +107,6 @@ AirCurve.resetSearch = function() {
  * 查询区域列表
  */
 AirCurve.search = function () {
-//	console.log(this.formParams());
-	
-	var treeObj = $.fn.zTree.getZTreeObj("areaTree");
-	var nodes = treeObj.getSelectedNodes();
-	if(nodes.length>0 && nodes[0].id.length==17){
 		
 		myChart.showLoading();    //数据加载完之前先显示一段简单的loading动画
 		 
@@ -130,7 +125,7 @@ AirCurve.search = function () {
 		type : "post",        //post请求方式
 		async : true,        //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
 		url : "/airStationData/query",    //请求发送到ShowInfoIndexServlet处
-		data : this.formParams(),        //请求内包含一个key为name，value为A0001的参数；服务器接收到客户端请求时通过request.getParameter方法获取该参数值
+		data : AirCurve.formParams(),        //请求内包含一个key为name，value为A0001的参数；服务器接收到客户端请求时通过request.getParameter方法获取该参数值
 		dataType : "json",        //返回数据形式为json
 		success : function(result) {
 		    //请求成功时执行该函数内容，result即为服务器返回的json对象
@@ -187,16 +182,6 @@ AirCurve.search = function () {
 		    	}
 		    	
 		    	
-		    	
-		    	
-//		    	console.log(data);
-//		    	console.log(dates);
-//		    	console.log(types);
-//		    	console.log(units);
-		    	console.log(legends);
-//		    	console.log(colors);
-//		    	console.log(series);
-		    	
 		           myChart.hideLoading();    //隐藏加载动画
 		           
 		           myChart.setOption({        //载入数据
@@ -216,14 +201,6 @@ AirCurve.search = function () {
 		        	    		
 		        	    		var formatter=[echarts.format.formatTime('yyyy-MM-dd hh:mm:ss', params[0].value[dims.time])];
 		        	    		
-//		        	    		for(var i=0;i<types.length;i++){
-//		        	    			if(types[i]=='风向'){
-//		        	    				formatter.push(types[i]+' : '+params[0].value[dims.windDirectionMsg]);
-//		        	    			}else{
-//		        	    				formatter.push(types[i]+' : '+params[0].value[dims[types[i]]]);
-//		        	    			}
-//		        	    			
-//		        	    		}
 		        	    		for(var i=0;i<legends.length;i++){
 		        	    			var legend=legends[i];
 		        	    			if(legend=='风向(。)'){
@@ -308,9 +285,7 @@ AirCurve.search = function () {
 //		console.log(myChart.getOption());
 		
 		
-	}else{
-		layer.msg('请点击选择查询传感器树节点项!',{icon:5});
-	}
+
 };
 
 

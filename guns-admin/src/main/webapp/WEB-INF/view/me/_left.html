@@ -1,0 +1,28 @@
+@if(isNotEmpty(titles) && tool.length(titles)>1){	
+	<div class="quyu">
+		<h2>菜单列表</h2>
+		<div class="quyu_info">
+			<ul class="nav nav-second-level collapse in" aria-expanded="true" style="">
+			
+				
+					@for(title in titles){
+						@if(tool.isEmpty(title.children)){
+		                    <li>
+		                        <a class="J_menuItem" href="${ctxPath}${title.url}" name="tabMenuItem">
+		                            <i class="fa ${title.icon}"></i>
+		                            <span class="nav-label">${title.name}</span>
+		                        </a>
+		                    </li>
+		                @}
+					
+					@}
+			
+			
+                                 
+                   </ul>
+			
+			
+		</div>
+		<img class="quyu2" src="${ctxPath}/static/me/images/quyu2.png" alt="">
+	</div>
+@}

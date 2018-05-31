@@ -139,4 +139,10 @@ public class Constant {
 	//LED控制卡型号
 	public static final List<String> control_card_type=ImmutableList.<String>builder().add("BX-6QL").add("BX-6Q0").add("BX-6Q1").add("BX-6Q2").add("BX-6Q2L").add("BX-6Q3").add("BX-6Q3L").add("BX-6QX-M").add("BX-6QX-YD").build(); 
 
+	
+	
+	//菜单图片类型
+	public static final Map<String,String> sys_menu_img=ImmutableMap.<String, String>builder().put("系统管理","xitong").put("基础配置","xuncha").put("气象监控","jiankong")
+			   .put("地图监控","yaoshi").put("数据分析","baojing").put("告警信息","yewei").put("预警控制","guangbo").put("实时发布","menjin").build();
+	
 }

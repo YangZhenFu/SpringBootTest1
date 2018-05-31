@@ -52,4 +52,24 @@ public class AirStationFunction {
 		return result;
 	}
 	
+	/**
+	 * <p>Title: findCurrentStation</p>  
+	 * <p>Description: 获取当前气象站</p>  
+	 * @return
+	 */
+	public AirStation findCurrentStation(){
+		List<AirStation> list = airStationService.selectList(new EntityWrapper<AirStation>().eq("valid", "0"));
+		if(CollectionUtils.isNotEmpty(list)){
+			return list.get(0);
+		}
+		return null;
+	}
+	
+	
+	public String findSysMenuImg(String menu){
+		return Constant.sys_menu_img.get(menu);
+	}
+	
+	
+	
 }

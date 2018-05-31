@@ -1,0 +1,311 @@
+body{
+	padding: 102px 0 40px 0;
+}
+.content{
+	background-color: #e9edf5;
+	padding: 0 0 74px 20px;
+	overflow: hidden;
+}
+.content .quyu{
+	float: left;
+	width: 200px;
+	margin-right: 14px;
+	height: 580px;
+	background-color: #fff;
+	position: relative;
+	border-left: 1px solid #ddd;
+	border-right: 1px solid #ddd;
+	border-radius: 8px;
+}
+.quyu_info{
+	height: 510px;
+	overflow-y: auto;
+}
+.content .quyu h2{
+	line-height: 35px;
+	text-align: center;
+	font-size: 16px;
+	color: #fff;
+	background: url(../images/quyu.png) no-repeat;
+}
+.content .quyu .info .city h3{
+	height: 30px;
+	background: url(../images/bbbb.png) no-repeat;
+	padding-left: 56px;
+	line-height: 30px;
+	font-size: 14px;
+	margin-bottom: 2px;
+	cursor: pointer;
+}
+.content .quyu .info .city h3.aaaa{
+	background: url(../images/bb.png) no-repeat;
+
+}
+.info .city ul{
+	padding: 8px 10px;
+	display: none;
+}
+.info .city ul li{
+	cursor: pointer;
+}
+.info .city ul li .title{
+	overflow: hidden;
+	padding-left: 28px;
+}
+.info .city ul li img{
+	float: left;
+	width: 12px;
+	height: 12px;
+	margin: 7px 10px 0 0;
+}
+.info .city ul li p{
+	float: left;
+	font-size: 12px;
+	line-height: 26px;
+	cursor: pointer;
+}
+.info .city ul li .title.minus{
+	overflow: hidden;
+	background-color: #c2e1cc;
+}
+.info .city ul li .con{
+	overflow: hidden;
+	/*padding-left: 60px;*/
+	display: none;
+}
+.info .city ul li .con p{
+	width: 100%;
+	font-size: 12px;
+	line-height: 26px;
+	cursor: pointer;
+	text-align: center;
+}
+.content .quyu img.quyu2{
+	position: absolute;
+	bottom: 0;
+	left: 0;
+}
+.table{
+	margin-right: 20px;
+	/*border-radius: 10px;*/
+	background-color: #fff;
+	overflow: hidden;
+	padding-bottom: 20px;
+}
+.table .title{
+	line-height: 26px;
+	background: url(../images/bg14.png) no-repeat;
+	overflow: hidden;
+}
+.table .title h3{
+	float: left;
+	width: 112px;
+	line-height: 30px;
+	text-align: center;
+	font-size: 12px;
+	color: #fff;
+	background-color: #5eb479;
+	cursor: pointer;
+}
+.table .title h3.current{
+	background-color: #fff;
+	color: #143e14;
+	padding-top: 4px;
+	line-height: 26px;
+}
+.inform{
+	margin: 8px 20px 14px 20px;
+	border: 1px solid #70b988;
+	border-top: 0;
+	display: none;
+}
+.table .active{
+	display: block;
+}
+.inform h3{
+	background: url(../images/bg15.png) no-repeat;
+	line-height: 30px;
+	font-size: 12px;
+}
+.inform h3 img{
+	margin: 0 10px 0 16px;
+}
+.inform div{
+	padding: 22px 0 22px 80px;
+	line-height: 28px;
+	font-size: 12px;
+}
+.guanli{
+	margin: 0 22px;
+	border: 1px solid #bfd0bf;
+	border-top: 0;
+	overflow: hidden;
+}
+.guanli .tit{
+	overflow: hidden;
+	background: url(../images/bg15.png) no-repeat;
+	padding-right: 34px;
+}
+.guanli .tit img{
+	float: left;
+	margin: 0 10px 0 16px;
+	height: 24px;
+}
+.guanli .tit h6{
+	float: left;
+	font-size: 14px;
+	line-height: 29px;
+}
+.guanli .tit p{
+	float: right;
+	line-height: 29px;
+	font-size: 14px;
+	color: #fff;
+	margin-left: 17px;
+}
+.guanli .tit p img{
+	width: 12px;
+	height: 12px;
+	margin-top: 8px;
+}
+.guanli h3{
+	float: left;
+	width: 102px;
+	height: 28px;
+	text-align: center;
+	line-height: 28px;
+	font-size: 14px;
+	color: #143e14;
+	background-color: #fff;
+	cursor: pointer;
+}
+.guanli h3.choose{
+	color: #fff;
+	background-color: #5eb479;
+}
+.guanli .yaoshi{
+	width: 100%;
+	float: left;
+	box-shadow: inset 0px 2px 6px 0px rgba(153, 153, 153, 4);
+	filter: progid:DXImageTransform.Microsoft.Shadow(color='#b5b5b5', Direction=135, Strength=5);
+	display: none;
+/*	height: 263px;
+	overflow-y: scroll;*/
+}
+.guanli .yaoshi ul{
+	overflow: hidden;
+	padding-top: 30px;
+}
+.guanli .yaoshi ul li{
+	float: left;
+	width: 90px;
+	height: 113px;
+	/*background: url(../images/bg.png) no-repeat;*/
+	margin: 0 12px 20px 12px;
+	text-align: center;
+	position: relative;
+}
+.guanli .yaoshi ul li:hover{
+	width: 96px;
+	height: 117px;
+	margin: 0 9px 16px 9px;
+}
+.guanli .yaoshi ul li img:first-child{
+	margin-top: 12px;
+	width: 30px;
+	height: 52px;
+	position: relative;
+	z-index: 999;
+}
+.guanli .yaoshi ul li p{
+	font-size: 12px;
+	color: #fff;
+	line-height: 40px;
+	text-align: center;
+	position: relative;
+	z-index: 999;
+}
+.guanli .yaoshi ul li p img{
+	float: left;
+	width: 8px;
+	height: 8px;
+	margin: 16px 5px 0 15px;
+}
+.guanli .show{
+	display: block;
+}
+.mask{
+	width: 100%;
+	height: 100%;
+	position: fixed;
+	top: 0;
+	left: 0;
+	background: rgba(0,0,0,.5);
+	filter:progid:DXImageTransform.Microsoft.gradient(startColorstr=#7f000000,endColorstr=#7f000000);
+	display: none;
+	z-index: 999999999999999;
+}
+.window{
+	width: 284px;
+	position: fixed;
+	top: 50%;
+	left: 50%;
+	margin: -78px 0 0 -142px;
+	background-color: #fff;
+	text-align: center;
+	border: 3px solid #67b581;
+	padding-bottom: 10px;
+	display: none;
+	z-index: 99999999999999999999;
+}
+.window h3{
+	line-height: 30px;
+	font-size: 16px;
+	color: #3a423d;
+	background: url(../images/bg15.png) no-repeat;
+	margin-bottom: 10px;
+}
+.window p{
+	line-height: 50px;
+	font-size: 14px;
+}
+.window img{
+	position: absolute;
+	top: 8px;
+	right: 14px;
+}
+
+.window img:hover{
+	width: 20px;
+	height: 20px;
+	top: 4px;
+	right: 7px;
+}
+.my-footer{
+	font-size: 12px;
+	color: #fff;
+	line-height: 40px;
+	background-color: #143e14;
+	text-align: center;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 10000;
+}
+
+.nav p{
+	line-height: 50px;
+	font-size: 14px;
+}
+.nav p a{
+	color: #000;
+}
+
+.acd{
+	font-weight: bold;
+}
+
+.con p{
+
+}

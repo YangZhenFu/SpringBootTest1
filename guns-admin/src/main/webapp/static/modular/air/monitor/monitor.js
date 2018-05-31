@@ -124,13 +124,65 @@ Monitor.OnClickArea = function(e, treeId, treeNode){
 }
 
 
+function refreshData(result){
+	
+	console.log(result);
+	
+	$('#data_refresh_time').html(''); 
+	$('#refresh_time').html('');
+	$('#real_time_status').empty();
+	$('#sensor_status').empty();
+	
+	if(result){
+		var refreshTime=new Date().format('yyyy-MM-dd hh:mm:ss');
+		$('#data_refresh_time').html(result.refreshTime); 
+		$('#refresh_time').html(refreshTime.split(' ')[1]);
+		
+		var data=result.data;
+		if(data){
+			for(var i=0;i<data.length;i++){
+				var sensor=data[i];
+				var tr='<tr><td class="center">'+sensor.code+'</td>'+
+							'<td class="center">'+sensor.tName+'</td>'+
+							'<td class="center">'+(sensor.minNumerical || '无')+'</td>'+
+							'<td class="center">'+(sensor.minTime || '-')+'</td>'+
+							'<td class="center">'+(sensor.maxNumerical || '无')+'</td>'+
+							'<td class="center">'+(sensor.maxTime || '-')+'</td>'+
+						'</tr>';
+				
+				var sensorClass=Monitor.sensorClasses[rd(0,(Monitor.sensorClasses.length-1))];
+				var div='<div class="col-md-3 col-sm-6 col-xs-6">'+
+							'<div class="widget '+sensorClass+' orders">'+
+								'<div class="row">'+
+									    '<a href="javascript:void(0);">'+
+											'<div class="col-sm-4">'+
+												'<div class="text-center">'+
+													'<img alt="image" class="img-circle m-t-xs img-responsive" style="height: 65.66px;" src="/static/img/sensor/'+sensor.icon+'.png">'+
+												'</div>'+
+											'</div>'+
+											'<div class="col-sm-8">'+
+												'<h3><font color="white">'+sensor.typeName+'</font></h3>'+
+												'<h3><strong><font color="white">'+(sensor.nowNumerical || '')+sensor.unit+'</font></strong></h3>'+
+											'</div>'+
+											'<div class="clearfix"></div>'+
+									    '</a>'+
+								'</div>'+
+						   '</div>'+
+						'</div>';
+				
+				$('#sensor_status').append(tr);
+				$('#real_time_status').append(div);
+			}
+		}
+		
+	}
+}
+
+
 
 $(function(){
-
-	   
-	    var myZTree = new $ZTree('areaTree',Feng.ctxPath+'/air/station/ztree');
-	    myZTree.bindOnClick(Monitor.OnClickArea);
-	    myZTree.init();
-	    myZTree.searchNodes('search_input');
-	 
+//	    var myZTree = new $ZTree('areaTree',Feng.ctxPath+'/air/station/ztree');
+//	    myZTree.bindOnClick(Monitor.OnClickArea);
+//	    myZTree.init();
+//	    myZTree.searchNodes('search_input');
 });

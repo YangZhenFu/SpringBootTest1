@@ -1,5 +1,6 @@
 @layout('/common/_container.html'){
-
+@var sensors = airSensor.findAllAirSensor();
+@var station = airStation.findCurrentStation();
  <div class="row">
     <div class="col-sm-12">
         <div class="ibox float-e-margins">
@@ -10,7 +11,7 @@
                 <div class="row row-lg">
                     <div class="col-sm-12">
                        	<div class="row">
-							<div class="col-lg-2 col-sm-3" style="width: 21.966667%;margin-left: inherit;">
+							<!-- <div class="col-lg-2 col-sm-3" style="width: 21.966667%;margin-left: inherit;">
 							<input class="form-control" style="margin-bottom: 10px;" id="search_input" name="code" placeholder="输入名称查询" type="text">
 								<div class="panel panel-default" >
 									<div class="panel-heading">区域列表</div>
@@ -18,12 +19,21 @@
 										<ul id="areaTree" class="ztree"></ul>
 									</div>
 								</div>
-							</div> 
+							</div> --> 
 							
-							<div class="col-lg-10 col-sm-9" style="margin-right: inherit;width: 79%;">
+							<div class="col-lg-10 col-sm-9" style="margin-right: inherit;width: 100%;">
 								<div class="row">
 									<div class="col-lg-10 col-sm-9">
 										<div class="row form-horizontal"  id="searchForm">
+											
+											<div class="col-lg-4 col-sm-6">
+												<#SelectCon id="sensorType" name="检测类型" >
+														<option value="${station.code}">全部</option>
+													@for(sensor in sensors){
+														<option value="${sensor.value.code}">${sensor.value.tName}</option>
+													@}
+				                                </#SelectCon>
+											</div>
 											
 											<div class="col-lg-4 col-sm-6">
 												<#TimeCon id="beginTime" name="开始时间" isTime="true" pattern="YYYY-MM-DD hh:mm:ss"/>
@@ -63,17 +73,24 @@
 </div>
 <script src="${ctxPath}/static/modular/air/curve/air_curve2.js"></script>
 <script type="text/javascript">
+	$(document).ready(function(){
+		$('#sensorType').on('change',AirCurve.search);
+	});
+</script>
+<script type="text/javascript">
 var nums=[];        //数值数组（存放服务器返回的所有温度值）
 var grades=[];		//空气等级数组
 var aqis=[];		//aqi数组
-var xAxis=[];		//气象站数组
+
+var dates=[];		//日期数组
+var pollutants=[];	//首要污染物数组
 
 var colors=[];
 
 $.ajax({    //使用JQuery内置的Ajax方法
 type : "post",        //post请求方式
 async : true,        //异步请求（同步请求将会锁住浏览器，用户其他操作必须等待请求完成才可以执行）
-url : "/airStationData/showFiveDaysAQI",    //请求发送到ShowInfoIndexServlet处
+url : "/airStationData/showOneDayAQI",    //请求发送到ShowInfoIndexServlet处
 dataType : "json",        //返回数据形式为json
 success : function(result) {
     //请求成功时执行该函数内容，result即为服务器返回的json对象
@@ -82,21 +99,19 @@ success : function(result) {
     	var data=result.data;
     	
     	for(var i=0;i<data.length;i++){
-    		var stationData=data[i];
-    		xAxis.push(stationData.tName);
-    		nums.push(stationData.sensorNum);
-    		grades.push(stationData.airGrade);
-    		aqis.push(stationData.aQI);
+    		var aqiData=data[i];
+    		nums.push(aqiData.countNumber);
+    		grades.push(aqiData.airGrade);
+    		aqis.push(aqiData.aQI);
+    		dates.push(aqiData.dateTime);
     		colors.push(AirCurve.color());
     	}
-    	
-    	
     	
            myChart.hideLoading();    //隐藏加载动画
            
            myChart.setOption({        //载入数据
         	   title: {    //图表标题
-        	        text: '五天数据统计表'
+        	        text: '空气质量指数统计表'
         	    },
         	    tooltip: {
         	    	trigger: 'axis',
@@ -128,13 +143,54 @@ success : function(result) {
         	        }
         	    },
         	   
+        	    visualMap: {
+                    top: 50,
+                    right: 10,
+                    pieces: [{
+                        gt: 0,
+                        lte: 50,
+                        color: '#096',
+                        label: '优'
+                    }, {
+                        gt: 50,
+                        lte: 100,
+                        color: '#ffde33',
+                        label: '良'
+                    }, {
+                        gt: 100,
+                        lte: 150,
+                        color: '#ff9933',
+                        label: '轻度污染'
+                    }, {
+                        gt: 150,
+                        lte: 200,
+                        color: '#cc0033',
+                        label: '中度污染'
+                    }, {
+                        gt: 200,
+                        lte: 300,
+                        color: '#660099',
+                        label: '重度污染'
+                    }, {
+                        gt: 300,
+                        color: '#7e0023',
+                        label: '严重污染'
+                    }],
+                    outOfRange: {
+                        color: '#999'
+                    },
+                    seriesIndex: 0,
+                    dimension: 1
+                },
+        	    
         	   legend: {    //图表上方的类别显示               
         	        show:true,
-        	        data:['设备数量','AQI','空气质量等级']
+        	        data:['AQI','记录数']
         	    },
         	   color : colors,
                xAxis: {
-                   data: xAxis    //填入X轴数据
+            	   type: 'category',
+                   data: dates    //填入X轴数据
                },
                
                yAxis : [    //Y轴（这里我设置了两个Y轴，左右各一个）
@@ -153,14 +209,6 @@ success : function(result) {
                 ],
                 series : [    //系列（内容）列表                      
                             {
-                                name:'设备数量',
-                                type:'bar',    //折线图表示（生成温度曲线）
-                                symbol:AirCurve.symbol(),    //设置折线图中表示每个坐标点的符号；emptycircle：空心圆；emptyrect：空心矩形；circle：实心圆；emptydiamond：菱形                        
-                                data:nums,        //数据值通过Ajax动态获取
-                                stack:'bar'
-                            },
-                            
-                            {
                                 name:'AQI',
                                 type:'line',
                                 symbol:AirCurve.symbol(), 
@@ -172,20 +220,27 @@ success : function(result) {
                                     ]
                                 },
                                 markLine: {
-                                    data: [
-                                        {type: 'average', name: '平均值'}
-                                    ]
+                                    silent: true,
+                                    data: [{
+                                        yAxis: 50
+                                    }, {
+                                        yAxis: 100
+                                    }, {
+                                        yAxis: 150
+                                    }, {
+                                        yAxis: 200
+                                    }, {
+                                        yAxis: 300
+                                    }]
                                 }
                             },
-                            
                             {
-                                name:'空气质量等级',
-                                type:'bar',
-                                symbol:AirCurve.symbol(),    //标识符号为实心圆
-                                data:grades,
-                                stack:'bar',
+                                name:'记录数',
+                                type:'bar',    //折线图表示（生成温度曲线）
+                                symbol:AirCurve.symbol(),    //设置折线图中表示每个坐标点的符号；emptycircle：空心圆；emptyrect：空心矩形；circle：实心圆；emptydiamond：菱形                        
+                                data:nums,        //数据值通过Ajax动态获取
                                 barWidth:75
-                            }                
+                            }
                 ]
            },true);
            

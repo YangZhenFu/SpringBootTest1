@@ -7,10 +7,10 @@ body {
 	background-color: #e4e6e9;
 	min-height: 100%;
 	padding-bottom: 0;
-	font-family: "Microsoft YaHei", "微软雅黑", "Microsoft JhengHei", "Verdana",
+	/* font-family: "Microsoft YaHei", "微软雅黑", "Microsoft JhengHei", "Verdana",
 		"Helvetica", "sans-serif", "宋体";
-	font-size: 14px;
-	color: #393939;
+	font-size: 14px; */
+	/* color: #393939; */
 	line-height: 1.5
 }
 

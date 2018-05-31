@@ -1,14 +1,14 @@
 package com.stylefeng.guns.modular.air.controller;
 
-import java.text.DecimalFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +29,7 @@ import com.stylefeng.guns.core.common.constant.AirQualityGrade;
 import com.stylefeng.guns.core.common.constant.WindDirection;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.excel.ExcelUtils;
-import com.stylefeng.guns.core.other.StringUtil;
-import com.stylefeng.guns.core.util.Convert;
-import com.stylefeng.guns.modular.air.dto.AirStationDataDto;
+import com.stylefeng.guns.modular.air.dto.AirStationAqiDto;
 import com.stylefeng.guns.modular.air.model.AirSensor;
 import com.stylefeng.guns.modular.air.model.AirStation;
 import com.stylefeng.guns.modular.air.model.AirStationData;
@@ -40,8 +38,6 @@ import com.stylefeng.guns.modular.air.service.IAirStationDataService;
 import com.stylefeng.guns.modular.air.service.IAirStationService;
 import com.stylefeng.guns.modular.air.service.ISensorTypeService;
 import com.stylefeng.guns.modular.air.warpper.AirStationDataWarpper;
-
-import cn.hutool.core.util.NumberUtil;
 
 /**
  * 气象站检测数据控制器
@@ -160,128 +156,71 @@ public class AirStationDataController extends BaseController {
 		return null;
 	}
     
+	
 	/**
 	 * <p>Title: analyzeFiveDaysAQI</p>  
-	 * <p>Description: 查询气象站近五天AQI数值</p>  
+	 * <p>Description: 查询气象站AQI数值</p>  
 	 * @return
 	 */
-	@RequestMapping(value="showFiveDaysAQI",method=RequestMethod.POST)
+	@RequestMapping(value="showOneDayAQI",method=RequestMethod.POST)
 	@ResponseBody
-	public Map<String,Object> analyzeFiveDaysAQI(){
+	public Map<String,Object> analyzeOneDaysAQI(){
 		Map<String,Object> result=Maps.newHashMap();
 		List<AirStation> stations = airStationService.selectList(new EntityWrapper<AirStation>().eq("valid", "0"));
 		if(CollectionUtils.isNotEmpty(stations)){
-			
-			List<AirStationDataDto> dtos=Lists.newArrayList();
-			for(AirStation station : stations){
-				
-				AirStationDataDto dto=new AirStationDataDto();
-				//查询气象站近五天数据
-				List<AirStationData> data=airStationDataService.selectFiveDaysData(station.getId());
-				//计算平均数值
-				calAvgAQIData(data,dto);
-				
-				//计算空气质量指数  int pm25_AQI=0,pm10_AQI=0,co_AQI=0,o3_AQI=0,so2_AQI=0,no2_AQI=0;
-				Integer[] aqi={0,0,0,0,0,0};
-				if(StringUtils.isNotBlank(dto.getPm25()))  aqi[0]=AirPollutionIndex.calAirPollutionIndex((int)Math.round(Double.valueOf(dto.getPm25())), "pm2.5");
-				if(StringUtils.isNotBlank(dto.getPm10()))  aqi[1] = AirPollutionIndex.calAirPollutionIndex((int)Math.round(Double.valueOf(dto.getPm10())), "pm10");
-				if(StringUtils.isNotBlank(dto.getCo()))  aqi[2] = AirPollutionIndex.calAirPollutionIndex((int)Math.round(Double.valueOf(dto.getCo())), "CO");
-				if(StringUtils.isNotBlank(dto.getO3()))  aqi[3] = AirPollutionIndex.calAirPollutionIndex((int)Math.round(Double.valueOf(dto.getO3())), "O3");
-				if(StringUtils.isNotBlank(dto.getSo2()))  aqi[4] = AirPollutionIndex.calAirPollutionIndex((int)Math.round(Double.valueOf(dto.getSo2())), "SO2");
-				if(StringUtils.isNotBlank(dto.getNo2()))  aqi[5] = AirPollutionIndex.calAirPollutionIndex((int)Math.round(Double.valueOf(dto.getNo2())), "NO2");
+			AirStation station = stations.get(0);
+			//查询每天平均AQI数值
+			List<AirStationAqiDto> dtos=airStationDataService.findOneDayAvgAQi(station.getId());
+			if(CollectionUtils.isNotEmpty(dtos)){
+				for(AirStationAqiDto dto : dtos){
+					
+					//计算空气质量指数  
+					Map<String,Integer> aqi=Maps.newHashMap();
+					if(StringUtils.isNotBlank(dto.getPm25()))  aqi.put("pm2.5", AirPollutionIndex.calAirPollutionIndex(Integer.parseInt(dto.getPm25()), "pm2.5"));
+					if(StringUtils.isNotBlank(dto.getPm10()))  aqi.put("pm10", AirPollutionIndex.calAirPollutionIndex(Integer.parseInt(dto.getPm10()), "pm10"));
+					if(StringUtils.isNotBlank(dto.getCo()))    aqi.put("CO", AirPollutionIndex.calAirPollutionIndex(Integer.parseInt(dto.getCo()), "CO"));
+					if(StringUtils.isNotBlank(dto.getO3()))    aqi.put("O3", AirPollutionIndex.calAirPollutionIndex(Integer.parseInt(dto.getO3()), "O3"));
+					if(StringUtils.isNotBlank(dto.getSo2()))   aqi.put("SO2", AirPollutionIndex.calAirPollutionIndex(Integer.parseInt(dto.getSo2()), "SO2"));
+					if(StringUtils.isNotBlank(dto.getNo2()))   aqi.put("NO2", AirPollutionIndex.calAirPollutionIndex(Integer.parseInt(dto.getNo2()), "NO2"));
 
-				//计算首要污染物
-				calPrimaryPollutant(aqi,dto);
-				
-				//计算空气质量等级
-				dto.setAirGrade(AirQualityGrade.calculateGrade(Double.valueOf(dto.getAQI())).getLevel());
-				
-				//查询传感器总数
-				int sensorCount = airSensorService.selectCount(new EntityWrapper<AirSensor>().eq("station_id", station.getId()).eq("valid", "0"));
-				
-				dto.setId(StringUtil.generatorShort());
-				dto.setCode(station.getCode());
-				dto.settName(station.gettName());
-				dto.setSensorNum(sensorCount);
-				
-				dtos.add(dto);
+					//计算AQI和首要污染物
+					calPrimaryPollutant(aqi,dto);
+					
+					//计算空气质量等级
+					dto.setAirGrade(AirQualityGrade.calculateGrade(Double.valueOf(dto.getAQI())).getLevel());
+				}
 			}
+			
 			result.put("data", dtos);
 		}
 		
 		return result;
 	}
-	
     
     
 	/**  
 	 * <p>Title: calPrimaryPollutant</p>  
-	 * <p>Description: 计算首要污染物</p>  
+	 * <p>Description: 计算AQI和首要污染物</p>  
 	 * @param aqi
 	 * @param dto  
 	 */ 
-	private void calPrimaryPollutant(Integer[] aqi, AirStationDataDto dto) {
-		if(aqi!=null && aqi.length>0){
-			List<Integer> asList = Arrays.asList(aqi);
-			Collections.sort(asList);
-			dto.setAQI(asList.get(asList.size()-1));
+	private void calPrimaryPollutant(Map<String,Integer> aqi, AirStationAqiDto dto) {
+		if(MapUtils.isNotEmpty(aqi)){
+			List<Integer> aqis = Lists.newArrayList(aqi.values());
+			Collections.sort(aqis);
+			dto.setAQI(aqis.get(aqis.size()-1));
+			//当AQI数值大于50时计算首要污染物
+			if(dto.getAQI()>50){
+				StringBuilder builder=new StringBuilder();
+				for(Entry<String,Integer> entry : aqi.entrySet()){
+					if(dto.getAQI()==entry.getValue()){
+						builder.append(entry.getKey()).append(" ");
+					}
+				}
+				dto.setPrimaryPollutant(builder.toString());
+			}
 		}
 		
-	}
-
-
-	/**  
-	 * <p>Title: calAvgAQIData</p>  
-	 * <p>Description: 计算aqi平均数值</p>  
-	 * @param data
-	 * @return  
-	 */ 
-	private void calAvgAQIData(List<AirStationData> datas,AirStationDataDto avgData) {
-		if(CollectionUtils.isNotEmpty(datas)){
-			//监测数据总值
-	    	double all_Airtemperature=0,all_Airhumidity=0,all_Soiltemperature=0,all_SoilAirhumidity=0,all_illuminance=0,all_rainfall=0,all_airpressure=0,
-	    		   all_WindSpeed=0,all_noise=0,all_pm25=0,all_pm10=0,all_pm1=0,all_co=0,all_o3=0,all_so2=0,all_no2=0,all_radiation=0,all_oxygenion=0;
-	    	DecimalFormat df=new DecimalFormat("#.0");
-	    	int total=datas.size();
-			for(AirStationData data : datas){
-				all_Airtemperature+=Convert.toDouble(data.getAirTemperature(),0D);
-				all_Airhumidity+=Convert.toDouble(data.getAirHumidity(),0D);
-				all_Soiltemperature+=Convert.toDouble(data.getSoilTemperature(),0D);
-				all_SoilAirhumidity+=Convert.toDouble(data.getSoilHumidity(),0D);
-				all_illuminance+=Convert.toDouble(data.getIlluminance(),0D);
-				all_rainfall+=Convert.toDouble(data.getRainfall(),0D);
-				all_airpressure+=Convert.toDouble(data.getAirPressure(),0D);
-				all_WindSpeed+=Convert.toDouble(data.getWindSpeed(),0D);
-				all_noise+=Convert.toDouble(data.getNoise(),0D);
-				all_pm25+=Convert.toDouble(data.getPm25(),0D);
-				all_pm10+=Convert.toDouble(data.getPm10(),0D);
-				all_pm1+=Convert.toDouble(data.getPm1(),0D);
-				all_co+=Convert.toDouble(data.getCo(),0D);
-				all_o3+=Convert.toDouble(data.getO3(),0D);
-				all_so2+=Convert.toDouble(data.getSo2(),0D);
-				all_no2+=Convert.toDouble(data.getNo2(),0D);
-				all_radiation+=Convert.toDouble(data.getRadiation(),0D);
-				all_oxygenion+=Convert.toDouble(data.getNegativeOxygenIon(),0D);
-			}
-			avgData.setAirTemperature(df.format(all_Airtemperature/total));
-			avgData.setAirHumidity(df.format(all_Airhumidity/total));
-			avgData.setSoilTemperature(df.format(all_Soiltemperature/total));
-			avgData.setSoilHumidity(df.format(all_SoilAirhumidity/total));
-			avgData.setIlluminance(df.format(all_illuminance/total));
-			avgData.setRainfall(df.format(all_rainfall/total));
-			avgData.setAirPressure(df.format(all_airpressure/total));
-			avgData.setWindSpeed(df.format(all_WindSpeed/total));
-			avgData.setNoise(df.format(all_noise/total));
-			avgData.setPm25(df.format(all_pm25/total));
-			avgData.setPm10(df.format(all_pm10/total));
-			avgData.setPm1(df.format(all_pm1/total));
-			avgData.setCo(df.format(all_co/total));
-			avgData.setO3(df.format(all_o3/total));
-			avgData.setSo2(df.format(all_so2/total));
-			avgData.setNo2(df.format(all_no2/total));
-			avgData.setRadiation(df.format(all_radiation/total));
-			avgData.setNegativeOxygenIon(df.format(all_oxygenion/total));
-		}
 	}
 
 

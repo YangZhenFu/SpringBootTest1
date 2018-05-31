@@ -77,4 +77,12 @@ public interface MenuMapper extends BaseMapper<Menu> {
      * @date 2017年2月19日 下午10:35:40
      */
     List<MenuNode> getMenusByRoleIds(List<Integer> roleIds);
+
+	/**  
+	 * <p>Title: selectMenuByPid</p>  
+	 * <p>Description: </p>  
+	 * @param menuId
+	 * @return  
+	 */ 
+	List<Map<String,Object>> selectMenuByPid(@Param("menuId")Long menuId);
 }

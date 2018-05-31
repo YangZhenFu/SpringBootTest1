@@ -18,7 +18,7 @@
             <div class="ibox-content">
                 <div class="row row-lg">
                         
-                      <div class="col-sm-12" id="ditus" style="">
+                      <div class="col-sm-12" id="ditus" style="left: 138px;">
 							<div id="container" tabindex="0" style="width: 1644px;height: 800px;"></div>
 							<div id='panel'></div>
 						</div>
@@ -108,28 +108,17 @@ for (var i = 0, marker; i < lnglats.length; i++) {
 			  		
 			  			var station = result.station;
 			  			if(station){
-			  				var ids=station.id+';';
-							
-							if(ids){
-								var url=Feng.ctxPath+'/airSensor/checkOnline';
-						        layer.msg('指令发送成功,请稍后.', {
+								var url='/air/monitor/queryData';
+								
+								layer.msg('指令发送成功,请稍后.', {
 						        	  icon: 16,
 						        	  time: 1000000, //2秒关闭（如果不配置，默认是3秒）
 						        	  shade: [0.1,'#fff'] //0.1透明度的白色背景
 						        });
-						        $.post(url,{ids : ids},function(result){
-						        	
-						        	if(result.code=='000000'){
-						    			 var index=layer.alert('选中的设备都在线!',{icon:1},function(){
-						    				 	location.reload();
-						        			});
-						    		 }else{
-						    			var index=layer.alert(result.msg,{icon:5},function(){
-						    				location.reload();
-						    			});
-						    		 }
-						        });
-							}
+								$.post(url,{stationCode:station.code,refresh:true},function(result){
+									console.log(result);
+									layer.closeAll();
+								});
 			  			}
 			  		
 			  	});
@@ -153,12 +142,12 @@ for (var i = 0, marker; i < lnglats.length; i++) {
 				  			}
 				  	});
 		        });
-		    }, 3);
+		    }, 3); 
 			 
 		  //绑定鼠标右击事件——弹出右键菜单
 		    marker.on('rightclick', function(e) {
 		        contextMenu.open(map, e.lnglat);
-		    }); */
+		    });  */
 			 
 			 
 			 

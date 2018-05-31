@@ -309,6 +309,12 @@ $(function () {
             $(this).addClass("active");
         });
         $('.page-tabs-content').css("margin-left", "0");
+        
+        $('.J_menuItem').each(function(){
+        	if($(this).hasClass('tab-menu-selected')){
+        		$(this).removeClass('tab-menu-selected');
+        	}
+        });
     });
 
 });

@@ -62,7 +62,10 @@ public class AirStationDataWarpper extends BaseControllerWarpper{
 				}else{
 					dataType.append(type.gettName()).append(" / ");
 					if(type.gettName().contains("风向")){
-						dataInfo.append(WindDirection.findWindDirectionByMark((String)map.get(StringConvert.underlineToCamelhump(typeCode))).getMsg()).append(" | ");
+						WindDirection direction = WindDirection.findWindDirectionByMark((String)map.get(StringConvert.underlineToCamelhump(typeCode)));
+						if(direction!=null){
+							dataInfo.append(direction.getMsg()).append(" | ");
+						}
 					}else{
 						dataInfo.append(map.get(StringConvert.underlineToCamelhump(typeCode))).append(sensor.getUnit()).append(" | ");
 					}

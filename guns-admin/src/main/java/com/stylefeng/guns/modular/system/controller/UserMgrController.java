@@ -2,6 +2,7 @@ package com.stylefeng.guns.modular.system.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.github.abel533.easyxls.EasyXls;
 import com.github.abel533.easyxls.bean.ExcelConfig;
 import com.google.common.collect.Lists;
@@ -49,16 +49,23 @@ import com.stylefeng.guns.core.db.Db;
 import com.stylefeng.guns.core.excel.ExcelUtils;
 import com.stylefeng.guns.core.exception.GunsException;
 import com.stylefeng.guns.core.log.LogObjectHolder;
+import com.stylefeng.guns.core.node.MenuNode;
 import com.stylefeng.guns.core.shiro.ShiroKit;
 import com.stylefeng.guns.core.shiro.ShiroUser;
+import com.stylefeng.guns.core.util.ApiMenuFilter;
 import com.stylefeng.guns.core.util.FileUtils;
 import com.stylefeng.guns.core.util.ToolUtil;
 import com.stylefeng.guns.modular.system.dao.UserMapper;
 import com.stylefeng.guns.modular.system.factory.UserFactory;
+import com.stylefeng.guns.modular.system.model.Menu;
 import com.stylefeng.guns.modular.system.model.User;
+import com.stylefeng.guns.modular.system.service.IMenuService;
 import com.stylefeng.guns.modular.system.service.IUserService;
 import com.stylefeng.guns.modular.system.transfer.UserDto;
+import com.stylefeng.guns.modular.system.warpper.MenuWarpper;
 import com.stylefeng.guns.modular.system.warpper.UserWarpper;
+
+import cn.hutool.core.util.NumberUtil;
 
 /**
  * 系统管理员控制器
@@ -77,6 +84,8 @@ public class UserMgrController extends BaseController {
 
     @Autowired
     private IUserService userService;
+    @Autowired
+    private IMenuService menuService;
 
     private static Logger logger = LoggerFactory.getLogger(UserMgrController.class);
     
@@ -491,8 +500,51 @@ public class UserMgrController extends BaseController {
     	return PREFIX + "sys_about.html";
     }
     
-    
-    
+    @RequestMapping(value="openPage/{menuId}")
+    public String openMenuPage(@PathVariable("menuId") Long menuId,Model model){
+    	if(menuId!=null){
+//    		List<Map<String,Object>> menus=menuService.findMenuByPid(menuId);
+//    		model.addAttribute("menus", new MenuWarpper(menus).warp());
+    		
+    		 //获取菜单列表
+            List<Integer> roleList = ShiroKit.getUser().getRoleList();
+            if (roleList == null || roleList.size() == 0) {
+                ShiroKit.getSubject().logout();
+                model.addAttribute("tips", "该用户没有角色，无法登陆");
+                return "/login.html";
+            }
+            List<MenuNode> allMenu = menuService.getMenusByRoleIds(roleList);
+            List<MenuNode> titles = MenuNode.buildTitle(allMenu);
+            titles = ApiMenuFilter.build(titles);
+
+            List<MenuNode> menus = Lists.newArrayList();
+            if(CollectionUtils.isNotEmpty(titles)){
+            	for(MenuNode node : titles){
+            		if(node.getId().equals(menuId)){
+            			if(CollectionUtils.isNotEmpty(node.getChildren())){
+            				menus.addAll(node.getChildren());
+            			}else{
+            				menus.add(node);
+            			}
+            		}
+            	}
+            }
+            
+            model.addAttribute("titles", menus);
+
+            
+    	}
+    	
+    	
+    	//获取用户头像
+        Integer id = ShiroKit.getUser().getId();
+        User user = userService.selectById(id);
+        String avatar = user.getAvatar();
+        model.addAttribute("avatar", avatar);
+    	
+    	
+    	return "/common.html";
+    }
     
     
     

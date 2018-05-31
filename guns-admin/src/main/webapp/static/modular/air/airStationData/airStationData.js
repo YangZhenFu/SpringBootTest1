@@ -54,11 +54,11 @@ AirData.formParams = function() {
 AirData.resetSearch = function() {
 	$("#condition").val('');$("#beginTime").val('');$("#endTime").val('');
 	this.areaId=0;
-	var treeObj = $.fn.zTree.getZTreeObj("areaTree");
-	var nodes = treeObj.getNodes();
-	if (nodes.length>0) {
-		treeObj.selectNode(nodes[0]);
-	}
+//	var treeObj = $.fn.zTree.getZTreeObj("areaTree");
+//	var nodes = treeObj.getNodes();
+//	if (nodes.length>0) {
+//		treeObj.selectNode(nodes[0]);
+//	}
 	AirData.search();
 }
 
@@ -66,7 +66,7 @@ AirData.resetSearch = function() {
  * 查询区域列表
  */
 AirData.search = function () {
-	console.log(this.formParams());
+	//console.log(this.formParams());
 	AirData.table.refresh({query: AirData.formParams()});
 };
 

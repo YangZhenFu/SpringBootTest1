@@ -1,12 +1,12 @@
 package com.stylefeng.guns.modular.air.service;
 
-import com.stylefeng.guns.modular.air.model.AirStationData;
-
 import java.util.List;
 import java.util.Map;
 
 import com.baomidou.mybatisplus.plugins.Page;
 import com.baomidou.mybatisplus.service.IService;
+import com.stylefeng.guns.modular.air.dto.AirStationAqiDto;
+import com.stylefeng.guns.modular.air.model.AirStationData;
 
 /**
  * <p>
@@ -70,5 +70,13 @@ public interface IAirStationDataService extends IService<AirStationData> {
 	 * @return  
 	 */ 
 	public List<AirStationData> selectFiveDaysData(Long id);
+
+	/**  
+	 * <p>Title: findOneDayAvgAQi</p>  
+	 * <p>Description: </p>  
+	 * @param id
+	 * @return  
+	 */ 
+	public List<AirStationAqiDto> findOneDayAvgAQi(Long id);
 
 }

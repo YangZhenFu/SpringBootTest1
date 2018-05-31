@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -18,13 +19,18 @@ import com.baomidou.mybatisplus.mapper.Condition;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.mapper.Wrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.stylefeng.guns.core.base.controller.BaseController;
 import com.stylefeng.guns.core.common.constant.Constant;
 import com.stylefeng.guns.core.common.constant.factory.PageFactory;
 import com.stylefeng.guns.core.log.LogObjectHolder;
+import com.stylefeng.guns.modular.air.model.AirSensor;
 import com.stylefeng.guns.modular.air.model.AirSensorAlarmInfo;
+import com.stylefeng.guns.modular.air.model.AirStation;
 import com.stylefeng.guns.modular.air.service.IAirSensorAlarmInfoService;
+import com.stylefeng.guns.modular.air.service.IAirSensorService;
+import com.stylefeng.guns.modular.air.service.IAirStationService;
 import com.stylefeng.guns.modular.air.warpper.AirSensorAlarmInfoWarpper;
 
 /**
@@ -41,7 +47,11 @@ public class AirSensorAlarmInfoController extends BaseController {
 
     @Autowired
     private IAirSensorAlarmInfoService airSensorAlarmInfoService;
-
+    @Autowired
+    private IAirStationService airStationService;
+    @Autowired
+    private IAirSensorService airSensorService;
+    
     /**
      * 跳转到传感器告警信息首页
      */
@@ -206,4 +216,32 @@ public class AirSensorAlarmInfoController extends BaseController {
     }
     
      
+    /**
+     * <p>Title: findCurrentAlarm</p>  
+     * <p>Description: 查询当前告警信息</p>  
+     * @return
+     */
+    @RequestMapping(value="queryAlarm",method=RequestMethod.POST)
+    @ResponseBody
+    public List<AirSensorAlarmInfo> findCurrentAlarm(){
+    	List<AirSensorAlarmInfo> alarms=Lists.newArrayList();
+    	//查询气象站
+    	List<AirStation> list = airStationService.selectList(new EntityWrapper<AirStation>().eq("valid", "0"));
+    	if(CollectionUtils.isNotEmpty(list)){
+    		AirStation station = list.get(0);
+    		//查询传感器
+    		List<AirSensor> sensors = airSensorService.selectList(new EntityWrapper<AirSensor>().eq("station_id", station.getId()).eq("valid", "0"));
+    		if(CollectionUtils.isNotEmpty(sensors)){
+    			for(AirSensor sensor : sensors){
+    				//查询传感器报警信息
+    				List<Map<String, Object>> sensorAlarm = airSensorAlarmInfoService.selectMaps(new EntityWrapper<AirSensorAlarmInfo>().eq("valid", "0").eq("sensor_id", sensor.getId()).eq("handle_state", "0"));
+    				alarms.addAll((List<AirSensorAlarmInfo>)new AirSensorAlarmInfoWarpper(sensorAlarm).warp());
+    			}
+    		}
+    		
+    	}
+    	
+		return alarms;
+    }
+    
 }

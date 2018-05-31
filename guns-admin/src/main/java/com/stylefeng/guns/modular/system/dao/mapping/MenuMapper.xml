@@ -174,4 +174,15 @@
         order by levels,num asc
     </select>
 
+
+	<select id="selectMenuByPid" resultType="map">
+		select <include refid="Base_Column_List"/> from sys_menu
+		<where>
+			<if test="menuId!=null and menuId!=''">
+				and FIND_IN_SET(CONCAT('[',(select code from sys_menu where id=#{menuId}),']'),pcodes)
+			</if>
+			and ismenu = 1 and status = 1
+		</where>
+	</select>
+
 </mapper>

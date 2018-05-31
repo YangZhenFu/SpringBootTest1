@@ -87,4 +87,12 @@ public class MenuServiceImpl extends ServiceImpl<MenuMapper, Menu> implements IM
     public List<MenuNode> getMenusByRoleIds(List<Integer> roleIds) {
         return this.baseMapper.getMenusByRoleIds(roleIds);
     }
+
+	/**
+	 * 根据PID查询所有子级菜单
+	 */
+	@Override
+	public List<Map<String,Object>> findMenuByPid(Long menuId) {
+		return baseMapper.selectMenuByPid(menuId);
+	}
 }

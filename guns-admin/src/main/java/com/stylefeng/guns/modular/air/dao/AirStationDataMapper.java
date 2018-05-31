@@ -7,6 +7,7 @@ import org.apache.ibatis.annotations.Param;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.stylefeng.guns.modular.air.dto.AirStationAqiDto;
 import com.stylefeng.guns.modular.air.model.AirStationData;
 
 /**
@@ -71,5 +72,15 @@ public interface AirStationDataMapper extends BaseMapper<AirStationData> {
 	 * @return
 	 */
 	public List<AirStationData> findFiveDaysData(@Param("id") Long id);
+	
+	
+	
+	/**
+	 * <p>Title: findOneDayAvgAqi</p>  
+	 * <p>Description: 查询每天平均AQI数值</p>  
+	 * @param id
+	 * @return
+	 */
+	public List<AirStationAqiDto> findOneDayAvgAqi(@Param("id")Long id);
 
 }

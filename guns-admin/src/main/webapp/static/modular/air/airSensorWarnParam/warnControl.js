@@ -209,11 +209,151 @@ Monitor.OnClickArea = function(e, treeId, treeNode){
 
 
 $(function(){
-
 	   
-	    var myZTree = new $ZTree('areaTree',Feng.ctxPath+'/air/station/ztree');
-	    myZTree.bindOnClick(Monitor.OnClickArea);
-	    myZTree.init();
-	    myZTree.searchNodes('search_input');
-	 
+//	    var myZTree = new $ZTree('areaTree',Feng.ctxPath+'/air/station/ztree');
+//	    myZTree.bindOnClick(Monitor.OnClickArea);
+//	    myZTree.init();
+//	    myZTree.searchNodes('search_input');
+	var stationCode=$('#station_code').val();
+	$.post(Feng.ctxPath+'/airSensorWarnParam/queryData',{stationCode:stationCode},function(result){
+		console.log(result);
+		
+		$('#real_time_status').empty();
+		$('#sensor_status').empty();
+		
+		if(result){
+			var sensors=result.sensors;
+			for(var i=0;i<sensors.length;i++){
+				var sensor=sensors[i];
+				var params=sensor.warnParams;
+				var div;
+				if(params.length>0){
+					div='<div class="col-md-2 col-sm-4 col-xs-4">'+
+					   		'<div class="widget gray-bg orders">'+
+							'<div class="row">'+
+									'<div class="col-sm-4">'+
+										'<div class="text-center">'+
+											'<img alt="image" class="img-circle m-t-xs img-responsive" src="/static/img/sensor/'+sensor.img+'.png">'+
+										'</div>'+
+									'</div>'+
+									'<div class="col-sm-8">'+
+										'<h3 class="switch-title"><font>'+sensor.tName+'</font></h3>'+
+											'<div class="switch" >'+
+											    '<input type="checkbox"   name="my-checkbox" id="'+sensor.id+'" status="'+params[0].controlMode+'"/>'+
+											'</div>'+
+									'</div>'+
+									'<div class="clearfix"></div>'+
+							'</div>'+
+						   '</div>'+
+						'</div>';
+				}else{
+					div='<div class="col-md-2 col-sm-4 col-xs-4">'+
+					   		'<div class="widget gray-bg orders">'+
+							'<div class="row">'+
+									'<div class="col-sm-4">'+
+										'<div class="text-center">'+
+											'<img alt="image" class="img-circle m-t-xs img-responsive" src="/static/img/sensor/'+sensor.img+'.png">'+
+										'</div>'+
+									'</div>'+
+									'<div class="col-sm-8">'+
+										'<h3 class="switch-title"><font>'+sensor.tName+'</font></h3>'+
+											'<button type="button" class="btn btn-primary " onclick="Monitor.openAddAirSensorWarnParam(this);" id="'+sensor.id+'">'+
+										    '<i class="fa fa-plus"></i>&nbsp;添加'+
+										    '</button>'+
+									'</div>'+
+									'<div class="clearfix"></div>'+
+							'</div>'+
+						   '</div>'+
+						'</div>';
+				}
+				$('#real_time_status').append(div);
+			}
+			
+			
+			$("input[name='my-checkbox']").each(function(){
+				var switchBtn=$(this);
+				var status=$(this).attr('status');
+				var sensorId=$(this)[0].id;
+				console.log($(this));
+				$(this).bootstrapSwitch({
+					 onText:'开',  
+			         offText:'关',
+			         onColor:"success",    
+		            offColor:"info",    
+		            size:"small", 
+			        onSwitchChange:function(event,state){
+			        	//打开
+			        	if(state==true){
+			        		state='0';
+			        	}else{
+			        		state='1';
+			        	}
+			        	var url=Feng.ctxPath+'/airSensorWarnParam/updateBySensorId/'+sensorId;
+			        	$.post(url,{state:state},function(result){
+			        		if(result.code=='200'){
+			        			 layer.msg(result.message,{icon:1},function(){
+			        				 switchBtn.parent().parent().parent().trigger('click');
+			         			});
+			        		}else{
+			        			 layer.msg(result.message,{icon:5},function(){
+			        				 switchBtn.parent().parent().parent().trigger('click');
+				         			});
+			        		}
+			        		
+			        	});
+			        	
+			        }
+				});
+				
+				if(status=='0'){
+					//打开
+			        $(this).bootstrapSwitch('toggleState',true);
+				}
+			});
+			
+			$('#real_time_status .orders').click(function(){
+				$('#sensor_status').empty();
+				if($(this).hasClass('warn-control-selected')){
+					$(this).removeClass('warn-control-selected');
+				}else{
+					$(this).addClass('warn-control-selected').parent().siblings().find('.orders').removeClass('warn-control-selected');
+					
+					var tagName=$(this).find('.switch-title').next().prop('tagName');
+					if(tagName=='DIV'){
+						var id=$(this).find("input[name='my-checkbox']")[0].id;
+						var url=Feng.ctxPath+'/airSensorWarnParam/queryBySensorId/'+id;
+						$.post(url,function(result){
+							console.log(result);
+							var params=result;
+							if(params && params.length>0){
+								for(var i=0;i<params.length;i++){
+									var param=params[i];
+									var tr='<tr><td class="center">'+param.sensorName+'</td>'+
+												'<td class="center">'+(param.startTime+'-'+param.endTime)+'</td>'+
+												'<td class="center">'+param.expression+'</td>'+
+												'<td class="center">'+param.threshold+'</td>'+
+												'<td class="center">'+param.controlMode+'</td>'+
+												'<td class="center">'+param.warnInterval+'</td>'+
+												'<td class="center">'+param.valid+'</td>'+
+												'<td class="center">'+param.alarmTime+'</td>'+
+												'<td class="center">'+param.sortCode+'</td>'+
+											'</tr>';
+									$('#sensor_status').append(tr);
+								}
+							}
+							
+							
+						});
+					}
+					
+				}
+			});
+			
+		
+			
+		}
+	});
+
+	
+	
 });

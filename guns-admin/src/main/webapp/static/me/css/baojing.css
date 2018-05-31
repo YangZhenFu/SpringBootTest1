@@ -1,0 +1,229 @@
+body{
+	background-color: #e9edf5;
+	padding: 102px 0 40px 0;
+}
+.footer{
+	font-size: 12px;
+	color: #fff;
+	line-height: 40px;
+	background-color: #143e14;
+	text-align: center;
+	position: fixed;
+	bottom: 0;
+	left: 0;
+	width: 100%;
+	z-index: 10000;
+}
+.content{
+	margin: 0 40px 30px 40px;
+	border-radius: 10px;
+	overflow: hidden;
+}
+.content .title{
+	line-height: 26px;
+	background: url(../images/bg14.png) no-repeat;
+	overflow: hidden;
+	/*border-radius: 10px 10px 0 0;*/
+}
+.content .title h3{
+	float: left;
+	width: 112px;
+	line-height: 30px;
+	text-align: center;
+	font-size: 12px;
+	color: #fff;
+	background-color: #5aaf74;
+	cursor: pointer;
+}
+.content .title h3.current{
+	background-color: #fff;
+	color: #143e14;
+	padding-top: 4px;
+	line-height: 26px;
+}
+.content .info{
+	background-color: #f2f2f2;
+	padding: 10px;
+	/*overflow: hidden;*/
+	height: 32px;
+	display: none;
+}
+.content .active{
+	display: block;
+}
+.content .info span{
+	float: left;
+	display: inline-block;
+	line-height: 32px;
+	color: #999;
+}
+.content .info input{
+	width: 120px;
+	float: left;
+	margin-right: 20px;
+	border: 1px solid #ddd;
+	height: 30px;
+	line-height: 30px;
+	text-align: center;
+}
+.content .info button.btn{
+	float: left;
+	background-color: #ff5404;
+	margin: 1px 0 0 0;
+	background-image: none;
+}
+.content .info button.btn:hover{
+	background-color: #aa641f;
+}
+.content .info button{
+	float: right;
+	font-size: 12px;
+	color: #fff;
+	line-height: 30px;
+	padding: 0 15px;
+	margin-left: 13px;
+	background-color: #76c3f2;
+}
+.content .info button:hover{
+	background-color: #35a4e8;
+}
+.con{
+	background-color: #fff;
+	padding: 0 15px 1px 15px;
+}
+.con img{
+	width: 80%;
+	display: block;
+	margin: 0 auto;
+}
+.con table{
+	border-top: 1px solid #e1e1e1;
+	border-left: 1px solid #e1e1e1;
+	width: 100%;
+	margin-top: 30px;
+}
+.con table th{
+	background-color: #f2f2f2;
+	border-bottom: 1px solid #e1e1e1;
+	font-size: 16px;
+	line-height: 30px;
+	font-weight: normal;
+	text-align: center;
+}
+.con table td{
+	border-right: 1px solid #e1e1e1;
+	border-bottom: 1px solid #e1e1e1;
+	text-align: center;
+	font-size: 14px;
+	color: #666;
+	line-height: 30px;
+	height: 30px;
+}
+.con table td button.first{
+	background-color: #3f92ff;
+	color: #fff;
+	border: 1px solid #fff;
+}
+.con table td button.first:hover{
+	background-color: #fff;
+	color: #3f92ff;
+	border: 1px solid #3f92ff;
+	line-height: 20px;
+}
+.con table td button{
+	line-height: 22px;
+	color: #3f92ff;
+	font-size: 12px;
+	border: 1px solid #3f92ff;
+	padding: 0 6px;
+	border-radius: 4px;
+	background-color: #fff;
+	margin-left: 7px;
+}
+.con table td button:hover{
+	background-color: #3f92ff;
+	color: #fff;
+}
+.con .pages{
+	overflow: hidden;
+	width: 310px;
+	margin: 26px auto 60px auto;
+}
+.con .pages a{
+	float: left;
+	font-size: 12px;
+	color: #585858;
+	line-height: 22px;
+	padding: 0 10px;
+	border: 1px solid #999;
+	margin-right: 6px;
+}
+.con .pages div{
+	float: left;
+	font-size: 12px;
+	color: #585858;
+	line-height: 22px;
+	margin-left: 10px;
+}
+.con .pages div select{
+	height: 20px;
+	line-height: 20px;
+	border: 1px solid #999;
+}
+.goback{
+	position: fixed;
+	bottom: 70px;
+	right: 40px;
+	cursor: pointer;
+	display: none;
+}
+.goback img{
+	width: 50px;
+	height: 50px;
+}
+.goback img.topimg{
+	width: 120px;
+	height: 50px;
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: none;
+}
+.goback:hover img.topimg{
+	display: block;
+}
+.content .info .select{
+	float: left;
+	width: 100px;
+	height: 30px;
+	border: 1px solid #ddd;
+	background-color: #fff;
+	position: relative;
+	margin-right: 20px;
+	cursor: pointer;
+}
+.content .info .select h3{
+	font-size: 12px;
+	color: #999;
+	line-height: 30px;
+	padding-left: 12px;
+	background: url(../images/down1.png) no-repeat 80px center;
+}
+.content .info .select div{
+	width: 100%;
+	border: 1px solid #ddd;
+	position: absolute;
+	top: 30px;
+	left: -1px;
+	background-color: #fff;
+	color: #666;
+	font-size: 12px;
+	z-index: 1000000;
+	display: none;
+}
+.content .info .select div p{
+	border-bottom: 1px solid #ddd;
+	line-height: 29px;
+	background-color: #f5f5f5;
+	padding: 0 10px;
+}

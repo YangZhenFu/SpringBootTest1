@@ -133,7 +133,12 @@ public class GetUdpDataTask  {
 			//数据长度
 			int n = CHexConver.hexStr2Bytes(params[2])[0];
 			List<String> list = Lists.newArrayList(params);
-			list=list.subList(0, n+5);
+			try {
+				list=list.subList(0, n+5);
+			} catch (Exception e) {
+				logger.error(data);
+				e.printStackTrace();
+			}
 			
 			StringBuilder builder=new StringBuilder();
 			for(int i=0;i<list.size()-2;i++){

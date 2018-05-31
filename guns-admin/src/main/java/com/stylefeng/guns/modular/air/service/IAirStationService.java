@@ -45,4 +45,18 @@ public interface IAirStationService extends IService<AirStation> {
 	 */ 
 	public int deleteAirStationById(Integer stationId);
 
+	/**  
+	 * <p>Title: queryRealTimeData</p>  
+	 * <p>Description: </p>  
+	 * @param stationCode
+	 * @return  
+	 */ 
+	public Map<String, Object> queryRealTimeData(String stationCode,boolean refresh);
+
+	/**
+	 * <p>Title: queryCurrentData</p>  
+	 * <p>Description: </p>  
+	 * @param station
+	 */
+	public void queryCurrentData(AirStation station);
 }
